@@ -72,7 +72,7 @@ def decode(img):
     y = 0
     letterValues = []
 
-    while len(msg) < msgLength:
+    while len(letterValues) < msgLength:
         red,green,blue = pixels[x,y]
         redBinary = numberToBinary(red)
         greenBinary = numberToBinary(green)
@@ -93,8 +93,8 @@ def decode(img):
         pixel = pixel + 1
         x = pixel % width
         y = pixel // width
-        
-    msg = numbersToText(letterValues):
+
+    msg = numbersToText(letterValues)
     return msg
 
 #Helper functions
@@ -103,16 +103,18 @@ def decode(img):
 
 def main():
     #Ask user if they want to encode/decode
-    """
-    myImg = Image.open('pki.png')
-    myMsg = "This is a secret message I will hide in an image."
-    encode(myImg, myMsg)
-    myImg.close()
-    """
+    choice = input("Encode or decode: ")
+    choice = choice.lower()
+    if choice == "encode":
+      myMsg = input("Enter a message: ")
+      myImg = Image.open('pki.png')
+      encode(myImg, myMsg)
+      myImg.close()
 
-    yourImg = Image.open('secretImg.png')
-    msg = decode(yourImg)
-    print(msg)
+    else:
+      yourImg = Image.open('secretImg.png')
+      msg = decode(yourImg)
+      print(msg)
 
-if __name__ == '__main__':
-    main()
+
+main()
