@@ -4,6 +4,7 @@
 
 from PIL import Image
 import os
+from BinaryTools import *
 
 def encode(img, msg):
     #TODO: You need to convert the RGB to binary
@@ -18,6 +19,8 @@ def encode(img, msg):
     red, green, blue = pixels[0, 0]
     pixels[0,0] = (msgLength, green, blue)
 
+    msgValues = textToNumbers(msg)
+
     for i in range(msgLength * 3):
         x = i % width
         y = i // width
@@ -28,7 +31,7 @@ def encode(img, msg):
         blueBinary = numberToBinary(blue)
 
         if pixel % 3 == 0:
-            letterBinary = numberToBinary(ord(msg[letterSpot]))
+            letterBinary = numberToBinary(msgValues[letterSpot])
             #ignore the red on the first pixel of each letter.
             greenBinary = greenBinary[0:7] + letterBinary[0]
             blueBinary = blueBinary[0:7] + letterBinary[1]
@@ -67,6 +70,8 @@ def decode(img):
     letterBinary = ""
     x = 0
     y = 0
+    letterValues = []
+
     while len(msg) < msgLength:
         red,green,blue = pixels[x,y]
         redBinary = numberToBinary(red)
@@ -82,44 +87,19 @@ def decode(img):
         else:
             letterBinary = letterBinary + redBinary[7] + greenBinary[7] + blueBinary[7]
             letterAscii = binaryToNumber(letterBinary)
-            letter = chr(letterAscii)
-            msg = msg + chr(letterAscii)
+            letterValues.append(letterAscii)
+
 
         pixel = pixel + 1
         x = pixel % width
         y = pixel // width
-
+        
+    msg = numbersToText(letterValues):
     return msg
 
 #Helper functions
 
-def numberToBinary(num):
-    """Takes a base10 number and converts to a binary string with 8 bits"""
-    binary = ""
-    #Convert from decimal to binary
-    while num > 0:
-        binary = str(num % 2) + binary
-        num = num // 2
 
-    while len(binary) < 8:
-        binary = "0" + binary
-
-    return binary
-
-def binaryToNumber(bin):
-    """Takes a string binary value and converts it to a base10 integer."""
-    decimal = 0
-    value = 1
-    while len(bin) > 0:
-        lastSpot = len(bin) - 1
-        lastDigit = bin[lastSpot]
-        if lastDigit == "1":
-            decimal = decimal + value
-
-        bin = bin[0:lastSpot]
-        value = value * 2
-
-    return decimal
 
 def main():
     #Ask user if they want to encode/decode
